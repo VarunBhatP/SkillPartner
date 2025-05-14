@@ -1,0 +1,447 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Mentors | SkillPartner</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f7;
+            min-height: 100vh;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            width: 250px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .user-role {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .nav-menu {
+            list-style: none;
+        }
+        
+        .nav-item {
+            margin-bottom: 5px;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left-color: var(--primary-color);
+        }
+        
+        .nav-icon {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .logout-link {
+            margin-top: 30px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            grid-column: 2;
+            padding: 30px;
+        }
+        
+        .page-header {
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+        
+        .page-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .search-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .search-form {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+        
+        .form-group {
+            flex: 1;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: white;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .results-container {
+            margin-top: 30px;
+        }
+        
+        .results-title {
+            font-size: 1.3rem;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .mentor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .mentor-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .mentor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mentor-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .mentor-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-right: 15px;
+            color: white;
+        }
+        
+        .mentor-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        
+        .mentor-bio {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .mentor-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .skill-tag {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--primary-color);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .mentor-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px 0;
+            color: #666;
+        }
+        
+        .no-results-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                grid-column: 1;
+                padding: 20px;
+            }
+            
+            .search-form {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .mentor-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        {{ user.username|slice:":1"|upper }}
+                    </div>
+                    <div>
+                        <div class="user-name">{{ user.username|truncatechars:15 }}</div>
+                        <div class="user-role">{{ user.profile.user_type|title }}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="{% url 'dashboard' %}" class="nav-link">
+                        <span class="nav-icon">🏠</span> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'profile' %}" class="nav-link">
+                        <span class="nav-icon">👤</span> My Profile
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'search_mentors' %}" class="nav-link active">
+                        <span class="nav-icon">🔍</span> Find Mentors
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'book_appointment' %}" class="nav-link">
+                        <span class="nav-icon">📅</span> Book Session
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'view_bookings' %}" class="nav-link">
+                        <span class="nav-icon">📝</span> My Bookings
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'manage_skills' %}" class="nav-link">
+                        <span class="nav-icon">💪</span> Manage Skills
+                    </a>
+                </li>
+                <li class="nav-item logout-link">
+                    <a href="{% url 'logout' %}" class="nav-link">
+                        <span class="nav-icon">🚪</span> Logout
+                    </a>
+                </li>
+            </ul>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Find Mentors</h1>
+                <p class="page-subtitle">Search for mentors based on the skills you want to learn</p>
+            </div>
+            
+            <!-- Search Form -->
+            <div class="search-container">
+                <form method="get" class="search-form">
+                    <div class="form-group">
+                        <label for="skill">Select a Skill</label>
+                        <select name="skill" id="skill">
+                            <option value="">-- Select a skill --</option>
+                            {% for skill in all_skills %}
+                                <option value="{{ skill.id }}" {% if selected_skill.id == skill.id %}selected{% endif %}>{{ skill.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+            </div>
+            
+            <!-- Search Results -->
+            <div class="results-container">
+                {% if selected_skill %}
+                    <h2 class="results-title">Mentors for {{ selected_skill.name }}</h2>
+                    
+                    {% if mentors %}
+                        <div class="mentor-grid">
+                            {% for mentor in mentors %}
+                                <div class="mentor-card">
+                                    <div class="mentor-header">
+                                        <div class="mentor-avatar">
+                                            {{ mentor.username|slice:":1"|upper }}
+                                        </div>
+                                        <h3 class="mentor-name">{{ mentor.username }}</h3>
+                                    </div>
+                                    
+                                    <p class="mentor-bio">
+                                        {% if mentor.profile.bio %}
+                                            {{ mentor.profile.bio|truncatewords:20 }}
+                                        {% else %}
+                                            No bio available.
+                                        {% endif %}
+                                    </p>
+                                    
+                                    <div class="mentor-skills">
+                                        {% for skill in mentor.profile.skills.all %}
+                                            <span class="skill-tag">{{ skill.name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    
+                                    <div class="mentor-actions">
+                                        <a href="{% url 'book_appointment' %}?mentor_id={{ mentor.id }}&skill_id={{ selected_skill.id }}" class="btn btn-primary">Book Session</a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="no-results">
+                            <div class="no-results-icon">🔍</div>
+                            <p>No mentors found for this skill.</p>
+                            <p>Try selecting a different skill or check back later.</p>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="no-results">
+                        <div class="no-results-icon">👆</div>
+                        <p>Select a skill above to find mentors.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+</body>
+</html>

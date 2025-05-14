@@ -1,0 +1,114 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Your Skills</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .skill-list {
+            margin: 20px 0;
+        }
+        .skill-item {
+            margin-bottom: 10px;
+        }
+        .skill-checkbox {
+            margin-right: 10px;
+        }
+        .btn {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background: #0069d9;
+        }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+        }
+        .current-skills {
+            margin-bottom: 20px;
+        }
+        .skill-tag {
+            display: inline-block;
+            background: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.9em;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Manage Your Skills</h1>
+        
+        <!-- Display current skills -->
+        <div class="current-skills">
+            <h3>Your Current Skills</h3>
+            {% if user_skills %}
+                {% for skill in user_skills %}
+                    <span class="skill-tag">{{ skill.name }}</span>
+                {% endfor %}
+            {% else %}
+                <p>You haven't added any skills yet.</p>
+            {% endif %}
+        </div>
+        
+        <!-- Form to update skills -->
+        <form method="post">
+            {% csrf_token %}
+            <h3>Select Your Skills</h3>
+            <div class="skill-list">
+                {% for skill in all_skills %}
+                    <div class="skill-item">
+                        <input 
+                            type="checkbox" 
+                            id="skill_{{ skill.id }}" 
+                            name="skills" 
+                            value="{{ skill.id }}"
+                            class="skill-checkbox"
+                            {% if skill in user_skills %}checked{% endif %}
+                        >
+                        <label for="skill_{{ skill.id }}">{{ skill.name }}</label>
+                    </div>
+                {% empty %}
+                    <p>No skills available in the system.</p>
+                {% endfor %}
+            </div>
+            
+            <button type="submit" class="btn">Save Skills</button>
+        </form>
+        
+        <a href="{% url 'dashboard' %}" class="back-link">Back to Dashboard</a>
+    </div>
+</body>
+</html>
