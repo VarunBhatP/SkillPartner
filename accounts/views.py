@@ -202,6 +202,62 @@ def view_bookings(request):
     
     return render(request, 'accounts/view_bookings.html', context)
 
+# View for confirming a booking
+@login_required(login_url='login')
+def confirm_booking(request, booking_id):
+    try:
+        # Get the booking
+        booking = Booking.objects.get(id=booking_id)
+        
+        # Check if the current user is the mentor for this booking
+        if request.user == booking.mentor:
+            # Update the booking status
+            booking.status = 'Confirmed'
+            booking.save()
+            
+            # Add a success message
+            from django.contrib import messages
+            messages.success(request, 'Booking confirmed successfully!')
+        else:
+            # Add an error message
+            from django.contrib import messages
+            messages.error(request, 'You are not authorized to confirm this booking.')
+    except Booking.DoesNotExist:
+        # Add an error message
+        from django.contrib import messages
+        messages.error(request, 'Booking not found.')
+    
+    # Redirect back to the bookings page
+    return redirect('view_bookings')
+
+# View for rejecting a booking
+@login_required(login_url='login')
+def reject_booking(request, booking_id):
+    try:
+        # Get the booking
+        booking = Booking.objects.get(id=booking_id)
+        
+        # Check if the current user is the mentor for this booking
+        if request.user == booking.mentor:
+            # Update the booking status
+            booking.status = 'Cancelled'
+            booking.save()
+            
+            # Add a success message
+            from django.contrib import messages
+            messages.success(request, 'Booking rejected successfully!')
+        else:
+            # Add an error message
+            from django.contrib import messages
+            messages.error(request, 'You are not authorized to reject this booking.')
+    except Booking.DoesNotExist:
+        # Add an error message
+        from django.contrib import messages
+        messages.error(request, 'Booking not found.')
+    
+    # Redirect back to the bookings page
+    return redirect('view_bookings')
+
 # View for managing skills
 @login_required(login_url='login')
 def manage_skills(request):

@@ -558,12 +558,12 @@
                             
                             <div class="booking-actions">
                                 {% if appointment.status == 'Pending' %}
-                                    <a href="#" class="btn btn-success">Confirm Session</a>
-                                    <a href="#" class="btn btn-danger" onclick="return confirm('Are you sure you want to decline this booking request?')">Decline Request</a>
+                                    <a href="{% url 'confirm_booking' appointment.id %}" class="btn btn-success">Confirm Session</a>
+                                    <a href="{% url 'reject_booking' appointment.id %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to decline this booking request?')">Decline Request</a>
                                 {% elif appointment.status == 'Confirmed' %}
                                     <a href="#" class="btn btn-primary">Send Message</a>
                                     <a href="#" class="btn btn-outline">Mark as Completed</a>
-                                    <a href="#" class="btn btn-danger" onclick="return confirm('Are you sure you want to cancel this confirmed session?')">Cancel Session</a>
+                                    <a href="{% url 'reject_booking' appointment.id %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to cancel this confirmed session?')">Cancel Session</a>
                                 {% endif %}
                             </div>
                         </div>
